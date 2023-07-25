@@ -1,0 +1,52 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="1">
+            <item index="0" class="java.lang.String" itemvalue="backports.zoneinfo" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8Inspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="E101" />
+          <option value="E117" />
+          <option value="E501" />
+          <option value="E122" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="contact_management.models.ContactDetail.*" />
+          <option value="users.models.UserProfile.*" />
+          <option value="referrals.models.Referral.*" />
+          <option value="smart_filter.models.ColumnDetails.*" />
+          <option value="customize.models.Document.*" />
+          <option value="customize.models.Address.*" />
+          <option value="users.models.UserDevice.*" />
+          <option value="users.models.CustomUser.*" />
+          <option value="pipeline_stages.models.PipelineStages.*" />
+          <option value="customize.models.Industry.*" />
+          <option value="customize.models.Territory.*" />
+          <option value="customize.models.PotentialReferral.*" />
+          <option value="customize.models.ContactStatus.*" />
+          <option value="customize.models.ReferralStatus.*" />
+          <option value="customize.models.ReferralInsurance.*" />
+          <option value="customize.models.ReferralDiagnosis.*" />
+          <option value="customize.models.Tag.*" />
+          <option value="customize.models.ReferralReason.*" />
+          <option value="customize.models.ReferralDiscipline.*" />
+          <option value="customize.models.OpportunityStatus.*" />
+          <option value="customize.models.OpportunityReason.*" />
+          <option value="customize.models.ActivityOutcome.*" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
