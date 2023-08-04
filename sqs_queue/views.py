@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import boto3
@@ -12,19 +13,22 @@ from rest_framework.generics import (
     DestroyAPIView,
     RetrieveAPIView,
 )
-Faker.seed(0)
-fake = Faker()
-
 
 from utilities import messages
 from .serializers import QueueSerializer
 from utilities.utils import ResponseInfo
 
 
+Faker.seed(0)
+fake = Faker()
+
+
 class CreateStandardQueueAPIView(CreateAPIView):
     """
     Class to create API for creating SQS Queue.
     """
+    permission_classes = ()
+    authentication_classes = ()
     serializer_class = QueueSerializer
 
     def __init__(self, **kwargs):
@@ -76,9 +80,6 @@ class CreateStandardQueueAPIView(CreateAPIView):
                 self.response_format["error"] = None
                 self.response_format["message"] = [messages.CREATED.format("SQS Queue")]
 
-
-
-
         except sqs.exceptions.QueueDeletedRecently:
             self.response_format["status_code"] = status.HTTP_404_NOT_FOUND
             self.response_format["data"] = None
@@ -94,10 +95,12 @@ class CreateStandardQueueAPIView(CreateAPIView):
         return Response(self.response_format)
 
 
-class SendMessageAPIView(GenericAPIView):
+class SendMessageAPIView(CreateAPIView):
     """
     Class to create API to send message to queue.
     """
+    permission_classes = ()
+    authentication_classes = ()
 
     def __init__(self, **kwargs):
         """
@@ -127,7 +130,8 @@ class SendMessageAPIView(GenericAPIView):
                 "order_id": str(fake.random_number(digits=7)),
                 "order_date": fake.date(),
                 "total_value": fake.random_number(digits=4),
-                "status": "ORDER_PLACED"
+                "status": "ORDER_PLACED",
+                "sequence_id": request.data.get("sequence_id")
             }
 
             response = sqs.send_message(
@@ -163,10 +167,12 @@ class SendMessageAPIView(GenericAPIView):
         return Response(self.response_format)
 
 
-class ReceiveMessageAPIView(GenericAPIView):
+class ReceiveMessageAPIView(RetrieveAPIView):
     """
     Class to create API to receive messages from queue.
     """
+    permission_classes = ()
+    authentication_classes = ()
 
     def __init__(self, **kwargs):
         """
@@ -229,10 +235,12 @@ class ReceiveMessageAPIView(GenericAPIView):
         return Response(self.response_format)
 
 
-class DeleteMessageAPIView(GenericAPIView):
+class DeleteMessageAPIView(DestroyAPIView):
     """
     Class to create API for deleting messages from queue.
     """
+    permission_classes = ()
+    authentication_classes = ()
 
     def __init__(self, **kwargs):
         """
@@ -317,6 +325,8 @@ class SetQueueAttributesAPIView(GenericAPIView):
     """
     Class to create API to set queue attributes.
     """
+    permission_classes = ()
+    authentication_classes = ()
 
     def __init__(self, **kwargs):
         """
@@ -393,6 +403,8 @@ class GetQueueUrlAPIView(GenericAPIView):
     """
     Class to create API to get queue url.
     """
+    permission_classes = ()
+    authentication_classes = ()
 
     def __init__(self, **kwargs):
         """
@@ -450,8 +462,10 @@ class GetQueueUrlAPIView(GenericAPIView):
 
 class DeleteQueueAPIView(GenericAPIView):
     """
-    Classs to create API to delete queue.
+    Class to create API to delete queue.
     """
+    permission_classes = ()
+    authentication_classes = ()
 
     def __init__(self, **kwargs):
         """
@@ -504,4 +518,35 @@ class DeleteQueueAPIView(GenericAPIView):
             self.response_format["error"] = "Queue Object"
             self.response_format["message"] = [messages.DOES_NOT_EXIST.format("Queue")]
 
+        return Response(self.response_format)
+
+
+class ReceiveLambdaMessageAPIView(CreateAPIView):
+    """
+    Class to create API to receive messages from queue.
+    """
+    permission_classes = ()
+    authentication_classes = ()
+
+    def __init__(self, **kwargs):
+        """
+        Constructor function for formatting the web response to return.
+        """
+        self.response_format = ResponseInfo().response
+        super(ReceiveLambdaMessageAPIView, self).__init__(**kwargs)
+
+    def get_queryset(self):
+        queue_id = self.kwargs["pk"]
+        return QueueModel.objects.get(id=queue_id)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Get method for polling messages from queue.
+        """
+
+        print(request.data, datetime.datetime.now())
+        print("step - 1")
+        import time
+        time.sleep(60)
+        print("step - 2")
         return Response(self.response_format)
